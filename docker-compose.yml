@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./server
+    container_name: eisenhower-server
+    restart: always
+    environment:
+      - PORT=3001
+    volumes:
+      - ./server/database.sqlite:/app/database.sqlite
+    ports:
+      - "8018:3001"
