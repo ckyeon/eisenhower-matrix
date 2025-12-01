@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { X, Pencil, Calendar } from 'lucide-react';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import NoteDetail from './NoteDetail';
 
 interface NoteEditorProps {
@@ -157,7 +158,25 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ isOpen, onClose, onSave, initia
                                 {isPreview ? (
                                     <div className="h-full overflow-y-auto p-4 custom-scrollbar">
                                         <div className="markdown-body">
-                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || '*No content*'}</ReactMarkdown>
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                                components={{
+                                                    a: ({ node, ...props }) => (
+                                                        <a
+                                                            {...props}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                if (props.href) {
+                                                                    openUrl(props.href);
+                                                                }
+                                                            }}
+                                                            className="text-blue-400 hover:text-blue-300 underline cursor-pointer"
+                                                        />
+                                                    )
+                                                }}
+                                            >
+                                                {content || '*No content*'}
+                                            </ReactMarkdown>
                                         </div>
                                     </div>
                                 ) : (
