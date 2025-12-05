@@ -40,15 +40,7 @@ router.post('/', (req, res) => {
         return res.status(400).json({ error: 'Title is required.' });
     }
 
-    // Check limit per quadrant (10 notes)
-    // Only if quadrant is not 0 (Unclassified)
-    if (quadrant !== 0) {
-        const countStmt = db.prepare('SELECT COUNT(*) as count FROM notes WHERE user_id = ? AND quadrant = ?');
-        const { count } = countStmt.get(req.user.id, quadrant);
-        if (count >= 10) {
-            return res.status(400).json({ error: 'Maximum 10 notes allowed per quadrant.' });
-        }
-    }
+
 
     try {
         const id = uuidv4();
@@ -87,14 +79,7 @@ router.put('/:id', (req, res) => {
             return res.status(404).json({ error: 'Note not found.' });
         }
 
-        // If moving quadrant, check limit
-        if (quadrant !== undefined && quadrant !== note.quadrant && quadrant !== 0) {
-            const countStmt = db.prepare('SELECT COUNT(*) as count FROM notes WHERE user_id = ? AND quadrant = ?');
-            const { count } = countStmt.get(req.user.id, quadrant);
-            if (count >= 10) {
-                return res.status(400).json({ error: 'Maximum 10 notes allowed per quadrant.' });
-            }
-        }
+
 
         const updateFields = [];
         const params = [];

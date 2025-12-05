@@ -173,13 +173,6 @@ const Dashboard: React.FC = () => {
 
         if (activeNote.quadrant === newQuadrant) return;
 
-        const targetCount = notes.filter(n => n.quadrant === newQuadrant && n.id !== activeId && !n.is_archived).length;
-        if (newQuadrant !== 0 && targetCount >= 10) {
-            alert("Maximum 10 notes allowed per quadrant!");
-            // Revert state if needed (though drag overlay handles visual revert usually)
-            return;
-        }
-
         // Optimistic update
         const previousNotes = [...notes];
         setNotes(prev => prev.map(n =>
